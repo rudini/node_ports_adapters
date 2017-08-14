@@ -1,7 +1,6 @@
 
-
-import { Reservation } from "../pure/check-capacity";
 import { IO } from "./get-reserved-seats-from-db";
+import { Reservation } from "../../core/domain/check-capacity";
 
 export function saveReservation(
     connectionString: string,
