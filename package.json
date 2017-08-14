@@ -15,5 +15,13 @@
     "JavaScript"
   ],
   "author": "Roger Rudin",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "rx": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.72",
+    "@types/rx": "^4.1.1"
+  }
 }
