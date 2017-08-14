@@ -1,6 +1,5 @@
 import { Success, Failure } from "../domain/result";
 import { CAPACITY_EXCEEDED } from "../domain/check-capacity";
-import { VALIDATION_FAILED } from "./validate-reservation";
 
 export type ModelError = {
     message: string;
