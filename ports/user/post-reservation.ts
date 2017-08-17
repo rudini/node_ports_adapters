@@ -19,16 +19,17 @@ export function postReservation(
             !result.isSuccess ? Observable.of(result) :
                 Observable.of(result)
                     .flatMap(r => getReservedSeatsFromDb(connectionString, r.value.reservationDate)
-                        .catch(error => failure(error))
                     )
                     .map((reservedSeats: number) => checkCapacity(restaurantsCapacity, reservedSeats, result.value))
                     .flatMap(x =>
                         !x.isSuccess ? Observable.of(x) :
                             Observable.of(x)
-                                .do(l => saveReservation(connectionString, l.value)
-                                    .catch(error => failure(error))
+                                .do(l => saveReservation(connectionString, l.value).then()
                                 )
                     ))
+        .catch((error: any) =>
+            Observable.of(failure<string>(error))
+        )
         .map(x => toHttpResult(x));
 
     return <Promise<HttpResult>>httpResult$.toPromise();

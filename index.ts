@@ -3,7 +3,7 @@ import { postReservation } from "./ports/user/post-reservation";
 
 postReservation({
     reservationDate: "2017-08-14",
-    name: "test",
+    name: "test12345",
     email: "test.test@test.com",
     quantity: 2
 }).then(x => {
