@@ -13,9 +13,9 @@ export type ReservationDto = {
 };
 
 export function validateReservation(
-    reservation: ReservationDto): Success<Reservation> | Failure<ModelError> | Failure<string> {
+    reservation: ReservationDto): Success<Reservation> | Failure<ModelError> {
 
-    let modelErrors = <ModelError>{ fieldErrors: [] };
+    let modelErrors: ModelError = <ModelError>{ fieldErrors: [] };
 
     if (!isInRange(reservation.name, 8, 20)) {
         modelErrors.fieldErrors = [...modelErrors.fieldErrors, { field: "name", message: "Expected value should be between 8 and 20" }];

@@ -6,5 +6,5 @@ export function saveReservation(
     connectionString: string,
     reservation: Reservation): IO<void> {
         // todo: implement save to a database
-        return Promise.reject("dasasdf");
+        return Promise.reject("failed open database");
 }

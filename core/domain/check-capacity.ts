@@ -7,7 +7,7 @@ export type Reservation = {
     quantity: number;
 };
 
-export const CAPACITY_EXCEEDED = "CAPACITY_EXCEEDED";
+export const CAPACITY_EXCEEDED: string = "CAPACITY_EXCEEDED";
 
 export function checkCapacity(
     capacity: number,

@@ -44,7 +44,7 @@ export function InternalServerError(error: any): HttpResult {
     };
 }
 
-export function toHttpResult<T>(result: Success<T> | Failure<string> | Failure<ModelError>): HttpResult {
+export function toHttpResult<T>(result: Success<T> | Failure<string> | Failure<ModelError> | Failure<Error>): HttpResult {
 
     if (result.isSuccess) {
         return OK(result.value);
