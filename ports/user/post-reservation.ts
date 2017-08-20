@@ -10,20 +10,23 @@ import { failure, Failure, Success } from "../../core/domain/result";
 const connectionString: string = "";
 const restaurantsCapacity: number = 10;
 
+const onSuccess =
+    <T, R>(f: (r: Success<R>) => Observable<T>) =>
+        (result: Success<R> | Failure<ModelError | string | Error>) =>
+            !result.isSuccess ? Observable.of(result) : f(result);
+
 export function postReservation(
     candidate: ReservationDto): IO<HttpResult> {
 
     const httpResult$: Observable<HttpResult> = Observable.of(candidate)
         .map(c => uniformOutput(validateReservation, c))
-        .flatMap(result =>
-            !result.isSuccess ? Observable.of(result) :
-                Observable.fromPromise(getReservedSeatsFromDb(connectionString, result.value.reservationDate))
-                    .map((reservedSeats: number) => checkCapacity(restaurantsCapacity, reservedSeats, result.value))
+        .flatMap(onSuccess(
+            result => Observable.fromPromise(getReservedSeatsFromDb(connectionString, result.value.reservationDate))
+                .map((reservedSeats: number) => checkCapacity(restaurantsCapacity, reservedSeats, result.value)))
         )
-        .flatMap(result =>
-            !result.isSuccess ? Observable.of(result) :
-                Observable.fromPromise(saveReservation(connectionString, result.value))
-                    .map(_ => result)
+        .flatMap(onSuccess(
+            result => Observable.fromPromise(saveReservation(connectionString, result.value))
+                .map(_ => result))
         )
         .catch((error: Error) =>
             Observable.of(failure<Error>("UNEXPECTED_ERROR", error))
@@ -36,25 +39,25 @@ export function postReservation(
 export function postReservation_(
     candidate: ReservationDto): IO<HttpResult> {
 
-        const result = validateReservation(candidate);
-        if (!result.isSuccess) {
-            return Promise.resolve(toHttpResult(result));
-        } else {
-            return getReservedSeatsFromDb(connectionString, result.value.reservationDate)
-                .then(reservedSeats => {
-                    let r = checkCapacity(restaurantsCapacity, reservedSeats, result.value);
-                    if (!r.isSuccess) {
-                        return Promise.resolve(toHttpResult(r));
-                    } else {
-                        return saveReservation(connectionString, r.value)
-                            .then(_ => toHttpResult(r))
-                            .catch((error: Error) => toHttpResult(failure<Error>("SAVE_RESERVATION_FAILED", error)));
-                    }
-                })
-                .catch((error: Error) => toHttpResult(failure<Error>("ERROR_ON_READING_RESERVEDSEATS_FROM_DATABASE", error)));
-        }
+    const result = validateReservation(candidate);
+    if (!result.isSuccess) {
+        return Promise.resolve(toHttpResult(result));
+    } else {
+        return getReservedSeatsFromDb(connectionString, result.value.reservationDate)
+            .then(reservedSeats => {
+                let r = checkCapacity(restaurantsCapacity, reservedSeats, result.value);
+                if (!r.isSuccess) {
+                    return Promise.resolve(toHttpResult(r));
+                } else {
+                    return saveReservation(connectionString, r.value)
+                        .then(_ => toHttpResult(r))
+                        .catch((error: Error) => toHttpResult(failure<Error>("SAVE_RESERVATION_FAILED", error)));
+                }
+            })
+            .catch((error: Error) => toHttpResult(failure<Error>("ERROR_ON_READING_RESERVEDSEATS_FROM_DATABASE", error)));
+    }
 }
 
-function uniformOutput<T>(f: (p: T) => any, p: T): Success<Reservation> | Failure<ModelError> | Failure<string> | Failure<Error> {
+function uniformOutput<T>(f: (p: T) => any, p: T): Success<Reservation> | Failure<ModelError | string | Error> {
     return f(p);
 }
