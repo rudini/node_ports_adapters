@@ -11,9 +11,9 @@ const connectionString: string = "";
 const restaurantsCapacity: number = 10;
 
 const onSuccess =
-    <T, R>(f: (r: Success<R>) => Observable<T>) =>
+    <T, R>(f: (r: Success<R>) => IO<T>) =>
         (result: Success<R> | Failure<ModelError | string | Error>) =>
-            !result.isSuccess ? Observable.of(result) : f(result);
+            !result.isSuccess ? Promise.resolve(result) : f(result);
 
 export function postReservation(
     candidate: ReservationDto): IO<HttpResult> {
@@ -21,12 +21,12 @@ export function postReservation(
     const httpResult$: Observable<HttpResult> = Observable.of(candidate)
         .map(c => uniformOutput(validateReservation, c))
         .flatMap(onSuccess(
-            result => Observable.fromPromise(getReservedSeatsFromDb(connectionString, result.value.reservationDate))
-                .map((reservedSeats: number) => checkCapacity(restaurantsCapacity, reservedSeats, result.value)))
+            result => getReservedSeatsFromDb(connectionString, result.value.reservationDate)
+                .then((reservedSeats: number) => checkCapacity(restaurantsCapacity, reservedSeats, result.value)))
         )
         .flatMap(onSuccess(
-            result => Observable.fromPromise(saveReservation(connectionString, result.value))
-                .map(_ => result))
+            result => saveReservation(connectionString, result.value)
+                .then(_ => result))
         )
         .catch((error: Error) =>
             Observable.of(failure<Error>("UNEXPECTED_ERROR", error))
