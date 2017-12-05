@@ -18,9 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "lazy.js": "^0.5.0",
-    "lodash": "^4.17.4",
-    "mori": "^0.3.2",
-    "rx": "^4.1.0"
+    "rxjs": "^5.5.3"
   },
   "devDependencies": {
     "@types/lazy.js": "^0.3.28",

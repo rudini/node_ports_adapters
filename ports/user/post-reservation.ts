@@ -1,5 +1,4 @@
-import * as _ from "lodash";
-import { Observable } from "rx";
+import { Observable } from "rxjs";
 import { ReservationDto, validateReservation } from "../../core/application/validate-reservation";
 import { HttpResult, ModelError, toHttpResult } from "../../core/application/to-http-result";
 import { IO, getReservedSeatsFromDb } from "../persistence/get-reserved-seats-from-db";

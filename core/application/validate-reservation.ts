@@ -3,7 +3,7 @@ import { Reservation } from "../domain/check-capacity";
 import { Success, Failure, success, failure } from "../domain/result";
 import { ModelError } from "./to-http-result";
 
-export const VALIDATION_FAILED = "VALIDATION_FAILED";
+export const VALIDATION_FAILED: string = "VALIDATION_FAILED";
 
 export type ReservationDto = {
     reservationDate: string;

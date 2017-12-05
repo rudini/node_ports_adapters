@@ -11,14 +11,14 @@ export type Failure<T> = {
     error: T;
 };
 
-export function success<T>(value?: T) {
+export function success<T>(value?: T): Success<T> {
     return <Success<T>>{
         isSuccess: true,
         value: value
     };
 }
 
-export function failure<T>(type: string, error?: T) {
+export function failure<T>(type: string, error?: T): Failure<T> {
     return <Failure<T>>{
         isSuccess: false,
         type: type,
