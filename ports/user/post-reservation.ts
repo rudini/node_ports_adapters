@@ -11,7 +11,7 @@ const restaurantsCapacity: number = 10;
 
 const onSuccess =
     <T, R>(f: (r: Success<R>) => IO<T>) =>
-        (result: Success<R> | Failure<ModelError | string | Error>) =>
+        (result: Success<R> | Failure<ModelError | string | Error>): IO<T | Failure<ModelError | string | Error>>  =>
             !result.isSuccess ? Promise.resolve(result) : f(result);
 
 export function postReservation(
